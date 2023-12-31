@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/responsive.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    </head>
+    </head>    
     <body>
         
         <!--================Header Menu Area =================-->
@@ -71,57 +71,32 @@
         <!--================Contact Area =================-->
         <section class="contact_area p_120">
             <div class="container">
-                <!-- <div id="mapBox" class="mapBox" 
-                    data-lat="40.701083" 
-                    data-lon="-74.1522848" 
-                    data-zoom="13" 
-                    data-info="PO Box CT16122 Collins Street West, Victoria 8007, Australia."
-                    data-mlat="40.701083"
-                    data-mlon="-74.1522848">
-                </div> -->
-                <!-- <div class="row">
-                    <div class="col-lg-3">
-                        <div class="contact_info">
-                            <div class="info_item">
-                                <i class="lnr lnr-home"></i>
-                                <h6>California, United States</h6>
-                                <p>Santa monica bullevard</p>
+                <div class="col-lg-9">
+                    <form id="submit-form" class="row contact_form" action="https://script.google.com/macros/s/AKfycbx4tEe79f9-AMJBfYEp3NlZ4gNdt-Dxw6PpIFh5SuBaP20xu5opjTwIQR4F8_CFQ9Os8A/exec" method="post" id="contactForm">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required />
+                                <span class="error-message" id="name-error"></span>
                             </div>
-                            <div class="info_item">
-                                <i class="lnr lnr-phone-handset"></i>
-                                <h6><a href="#">00 (440) 9865 562</a></h6>
-                                <p>Mon to Fri 9am to 6 pm</p>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address" required />
+                                <span class="error-message" id="email-error"></span>
                             </div>
-                            <div class="info_item">
-                                <i class="lnr lnr-envelope"></i>
-                                <h6><a href="#">support@colorlib.com</a></h6>
-                                <p>Send us your query anytime!</p>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter Subject" required />
+                                <span class="error-message" id="subject-error"></span>
                             </div>
                         </div>
-                    </div> -->
-                    <div class="col-lg-9">
-                        <form id="submit-form" class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required/>
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address" required/>
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter Subject" required/>
-                                </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Enter Message" required></textarea>
+                                <span class="error-message" id="message-error"></span>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <textarea class="form-control" name="message" id="message" rows="1" placeholder="Enter Message" required></textarea>
-                                </div>
-                            </div>
-                            <div class="col-md-12 text-right">
-                                <button type="submit" value="submit" class="btn submit_btn" >Send Message</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="col-md-12 text-right">
+                            <button type="button" class="btn submit_btn" onclick="validateForm()">Send Message</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
@@ -142,7 +117,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
         				</aside>
         			</div>
-        			<div class="col-lg-5 col-sm-6">
+        			<!-- <div class="col-lg-5 col-sm-6">
         				<aside class="f_widget news_widget">
         					<div class="f_title">
         						<h3>Newsletter</h3>
@@ -158,7 +133,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                                 </form>
                             </div>
         				</aside>
-        			</div>
+        			</div> -->
         			<div class="col-lg-2">
         				<aside class="f_widget social_widget">
         					<div class="f_title">
@@ -190,8 +165,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
                     </div>
                 </div>
             </div>
-        </div>
-
+        </div>        
         <!-- Modals error -->
 
         <div id="error" class="modal modal-message fade" role="dialog">
@@ -237,28 +211,93 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
         <script src="js/gmaps.min.js"></script>
         <script src="js/theme.js"></script>
         <script>
-            function validate() {
-                let valName = document.getElementById("name");
-                console.log(valName);
-            }
-
-            $("#submit-form").submit((e)=>{
-                e.preventDefault()
+            function validateForm() {
+                // Clear previous error messages
+                clearErrorMessages();
+    
+                var name = document.getElementById("name").value;
+                var email = document.getElementById("email").value;
+                var subject = document.getElementById("subject").value;
+                var message = document.getElementById("message").value;
+    
+                // Basic checks
+                if (name.trim() === "") {
+                    displayErrorMessage("name", "Please enter your name");
+                    return;
+                }
+    
+                if (email.trim() === "") {
+                    displayErrorMessage("email", "Please enter your email address");
+                    return;
+                }
+    
+                if (subject.trim() === "") {
+                    displayErrorMessage("subject", "Please enter the subject");
+                    return;
+                }
+    
+                if (message.trim() === "") {
+                    displayErrorMessage("message", "Please enter your message");
+                    return;
+                }
+    
+                // Name format check (only alphabets and spaces allowed)
+                var nameRegex = /^[a-zA-Z\s]+$/;
+                if (!nameRegex.test(name)) {
+                    displayErrorMessage("name", "Invalid name");
+                    return;
+                }
+    
+                // Email format check
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    displayErrorMessage("email", "Invalid email address");
+                    return;
+                }
+    
+                // Subject format check (you can customize this)
+                // Here, I'm checking if the subject contains at least one alphabet
+                var subjectRegex = /[a-zA-Z]/;
+                if (!subjectRegex.test(subject)) {
+                    displayErrorMessage("subject", "Invalid subject");
+                    return;
+                }
+    
+                // Additional checks as needed...
+    
+                // If all validation passes, submit the form using AJAX
                 $.ajax({
-                    url:"https://script.google.com/macros/s/AKfycbwHMChEua8u_x7s5oQe6q0z92AhnQTTbvL5Snt8hk_idepYfX5BClkwGk42_AC8CbjmEw/exec",
-                    data:$("#submit-form").serialize(),
-                    method:"post",
-                    success:function (response){
-                        alert("Form submitted successfully")
-                        window.location.reload()
-                        //window.location.href="https://google.com"
+                    url: "https://script.google.com/macros/s/AKfycbx4tEe79f9-AMJBfYEp3NlZ4gNdt-Dxw6PpIFh5SuBaP20xu5opjTwIQR4F8_CFQ9Os8A/exec",
+                    method: "POST",
+                    data: {
+                        name: name,
+                        email: email,
+                        subject: subject,
+                        message: message
                     },
-                    error:function (err){
-                        alert("Something Error")
-        
+                    success: function(response) {
+                        alert("Thank you for your response. We will contact you as soon as possible.");
+    
+                        // Reload the page
+                        window.location.reload();
+                    },
+                    error: function() {
+                        alert("Something went wrong. Please try again later.");
                     }
-                })
-            })
-        </script>
+                });
+            }
+    
+            function displayErrorMessage(fieldId, message) {
+                var errorMessageElement = document.getElementById(fieldId + "-error");
+                errorMessageElement.innerHTML = message;
+            }
+    
+            function clearErrorMessages() {
+                var errorMessages = document.getElementsByClassName("error-message");
+                for (var i = 0; i < errorMessages.length; i++) {
+                    errorMessages[i].innerHTML = "";
+                }
+            }
+        </script>                
     </body>
 </html>
